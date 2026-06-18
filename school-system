@@ -1,0 +1,201 @@
+class School {
+  constructor(name, code, id) {
+    this.id = Math.floor(Math.random() * 10000);
+    this.name = name;
+    this.code = code;
+    this.classes = [];
+  }
+  //addclass
+  addClass(name, code) {
+    const existingClass = this.classes.find((cls) => cls.code === code);
+    if (existingClass) {
+      console.log("class already exists");
+      return;
+    }
+    const newClass = {
+      id: Date.now(),
+      name,
+      code,
+      sections: [],
+    };
+    this.classes.push(newClass);
+    return newClass;
+  }
+
+  //addsection
+  addSection(classId, sectionName) {
+    const cls = this.classes.find((cls) => cls.id === classId);
+    if (!cls) {
+      console.log("class not found");
+      return;
+    }
+    const existingSection = cls.sections.find(
+      (section) => section.name === sectionName,
+    );
+    if (existingSection) {
+      console.log("section already exists");
+      return;
+    }
+
+    const newSection = {
+      id: Date.now(),
+      name: sectionName,
+      students: [],
+    };
+    cls.sections.push(newSection);
+    return newSection;
+  }
+  //add student
+  addStudent(classId, sectionId, studentName, roll) {
+    const cls = this.classes.find((cls) => cls.id === classId);
+    if (!cls) {
+      console.log("class not found");
+      return;
+    }
+    const section = cls.sections.find((section) => section.id === sectionId);
+    if (!section) {
+      console.log("section not found");
+      return;
+    }
+    const existingStudent = section.students.find(
+      (student) => student.roll === roll,
+    );
+    if (existingStudent) {
+      console.log("student roll already exist");
+      return;
+    }
+    const newStudent = {
+      id: Date.now(),
+      name: studentName,
+      roll: roll,
+    };
+    section.students.push(newStudent);
+    return newStudent;
+  }
+
+  //updateclass
+  updateClass(classId, name, code) {
+    const cls = this.classes.find((cls) => cls.id === classId);
+    if (!cls) {
+      console.log("class not found");
+      return;
+    }
+    cls.name = name;
+    cls.code = code;
+    return cls;
+  }
+  //updateSection
+  updateSection(classId, sectionId, sectionName) {
+    const cls = this.classes.find((cls) => cls.id === classId);
+    if (!cls) {
+      console.log("class not found");
+      return;
+    }
+    const section = cls.sections.find((section) => section.id === sectionId);
+    if (!section) {
+      console.log("section not found");
+      return;
+    }
+    section.name = sectionName;
+    return section;
+  }
+  //updatestudent
+  updateStudent(classId, sectionId, studentId, studentName, roll) {
+    const cls = this.classes.find((cls) => cls.id === classId);
+    if (!cls) {
+      console.log("class not found");
+      return;
+    }
+    const section = cls.sections.find((section) => section.id === sectionId);
+    if (!section) {
+      console.log("section not found");
+      return;
+    }
+    const student = section.students.find(
+      (student) => student.id === studentId,
+    );
+    if (!student) {
+      console.log("student not found");
+      return;
+    }
+    student.name = student.name = studentName;
+    student.roll = roll;
+    return student;
+  }
+  //deletestudent
+  deleteStudent(classId, sectionId, studentId) {
+    const cls = this.classes.find((cls) => cls.id === classId);
+    if (!cls) {
+      console.log("class not found");
+      return;
+    }
+    const section = cls.sections.find((section) => section.id === sectionId);
+    if (!section) {
+      console.log("section not found");
+      return;
+    }
+    const student = section.students.find(
+      (student) => student.id === studentId,
+    );
+    if (!student) {
+      console.log("student not found");
+      return;
+    }
+    section.students = section.students.filter(
+      (student) => student.id !== studentId,
+    );
+    console.log("student deleted succesfully");
+  }
+  //delete section
+  deleteSection(classId, sectionId) {
+    const cls = this.classes.find((cls) => cls.id === classId);
+    if (!cls) {
+      console.log("class not found");
+      return;
+    }
+    const section = cls.sections.find((section) => section.id === sectionId);
+    if (!section) {
+      console.log("section not found");
+      return;
+    }
+    if (section.students.length > 0) {
+      console.log("cannot delete section.student exists.");
+      return;
+    }
+    cls.sections = cls.sections.filter((section) => section.id !== sectionId);
+    console.log("section deleted succesfully");
+  }
+  //deleteclass
+  deleteclass(classId) {
+    const cls = this.classes.find((cls) => cls.id === classId);
+    if (!cls) {
+      console.log("class not found");
+      return;
+    }
+
+    if (cls.sections.length > 0) {
+      console.log("cannot delete class.sections exists.");
+      return;
+    }
+    this.classes = this.classes.filter((cls) => cls.id !== classId);
+    console.log("section deleted succesfully");
+  }
+}
+const school = new School("ppp School", "ppp001");
+const cls = school.addClass("class 9", "c9");
+const sec = school.addSection(cls.id, "a");
+
+const student = school.addStudent(cls.id, sec.id, "riya", 1);
+console.log("before update");
+console.log(JSON.stringify(school, null, 2));
+school.updateClass(cls.id, "class 10", "c10");
+school.updateSection(cls.id, sec.id, "b");
+school.updateStudent(cls.id, sec.id, student.id, "riya not", 10);
+console.log("after update");
+
+console.log(JSON.stringify(school, null, 2));
+school.deleteStudent(cls.id, sec.id, student.id);
+school.deleteSection(cls.id, sec.id);
+school.deleteclass(cls.id);
+console.log("after delete");
+console.log(JSON.stringify(school, null, 2));
